@@ -1,6 +1,6 @@
 import { CronJob } from 'cron';
-const moment = require('moment');
-const Parse = require("node/parse");
+import Moment from 'moment';
+import Parse from "parse/node";
 import axios from 'axios';
 
 const PARSE_TIMEZONE = 'UTC';
@@ -106,7 +106,7 @@ export default class JobsScheduler {
   }
 
   private countCronTime(jobSchedule: Parse.Object) {
-    const timeOfDay = moment(jobSchedule.get('timeOfDay'), 'HH:mm:ss.Z').utc();
+    const timeOfDay = Moment(jobSchedule.get('timeOfDay'), 'HH:mm:ss.Z').utc();
     const daysOfWeek = jobSchedule.get('daysOfWeek');
     const cronDoW = (daysOfWeek) ? this.daysOfWeekToCronString(daysOfWeek) : '*';
 
