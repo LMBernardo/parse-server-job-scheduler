@@ -1,14 +1,14 @@
 {
-  "name": "parse-server-jobs-scheduler",
-  "version": "1.1.1",
-  "description": "Jobs scheduler for Parse Server",
+  "name": "parse-server-job-scheduler",
+  "version": "1.1.2",
+  "description": "Job scheduler for Parse Server",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "rm -rf ./dist/* && bash -c './node_modules/.bin/tsc'",
     "prepare": "npm run build"
   },
-  "author": "lcpmarvel",
+  "author": "lmbernar@uark.edu",
   "license": "ISC",
   "devDependencies": {
     "@types/cron": "^1.7.3",
