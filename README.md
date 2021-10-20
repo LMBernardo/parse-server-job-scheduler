@@ -16,10 +16,10 @@ npm sta
 
 ```js
 try {
-    const jobScheduler = require('parse-server-job-scheduler');
-    jobScheduler(Parse);
-} catch (err){
-    console.error(`Error: ${err}`);
-    console.error(`Failed to set up job scheduling!`);
+    var scheduler = require('parse-server-job-scheduler');
+    scheduler(Parse);
+} catch (err) {
+    console.error("Error: " + err);
+    console.error("Failed to set up job scheduling!");
 }
 ```
