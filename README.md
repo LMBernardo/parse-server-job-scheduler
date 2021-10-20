@@ -11,7 +11,6 @@ You have to handle the concurrency issue since this plugin is running by parse s
 ```sh
 $ npm install parse-server-job-scheduler --save
 ```
-npm sta
 ### Add the following lines in your Cloud code main.js file, or in a file included by main.js
 
 ```js
