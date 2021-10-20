@@ -1,5 +1,6 @@
 import { CronJob } from 'cron';
 const moment = require('moment');
+const Parse = require("node/parse");
 import axios from 'axios';
 
 const PARSE_TIMEZONE = 'UTC';
@@ -14,12 +15,14 @@ export default class JobsScheduler {
     const query = new Parse.Query('_JobSchedule');
 
     query.find({ useMasterKey: true })
-      .then((jobSchedules) => {
+    // TODO: Fix any
+      .then((jobSchedules: any) => {
         this.destroySchedules();
 
         let recreatedJobs = 0;
 
-        jobSchedules.forEach((jobSchedule) => {
+        // TODO: Fix any
+        jobSchedules.forEach((jobSchedule: any) => {
           try {
             this.recreateJobSchedule(jobSchedule);
             recreatedJobs += 1;
