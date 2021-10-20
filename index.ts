@@ -44,8 +44,6 @@ class JobScheduler {
     query.find({ useMasterKey: true })
       .then((jobSchedules: Parse.Object[]) => {
         this.destroySchedules();
-
-        // TODO: Fix any
         jobSchedules.forEach((jobSchedule: Parse.Object) => {
           try {
             this.recreateJobSchedule(jobSchedule);
