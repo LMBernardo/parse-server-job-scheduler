@@ -16,7 +16,8 @@ npm sta
 
 ```js
 try {
-    require('parse-server-job-scheduler')(Parse);
+    const jobScheduler = require('parse-server-job-scheduler');
+    jobScheduler(Parse);
 } catch (err){
     console.error(`Error: ${err}`);
     console.error(`Failed to set up job scheduling!`);
