@@ -6,8 +6,9 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "rm -rf ./dist/* && bash -c './node_modules/.bin/tsc'",
-    "prepare": "npm run build"
+    "build": "rm -rf ./dist/* && sh -c './node_modules/.bin/tsc'",
+    "prepare": "npm run build",
+    "test": "echo Someone should really implement some tests..."
   },
   "author": "lmbernar@uark.edu",
   "license": "ISC",
