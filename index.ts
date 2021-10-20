@@ -178,6 +178,6 @@ class JobScheduler {
   }
 }
 
-export default function Scheduler(parseApp: typeof Parse){
+module.exports = function(parseApp: typeof Parse){
     return JobScheduler.getInstance(parseApp);
 }
