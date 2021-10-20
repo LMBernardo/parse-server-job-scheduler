@@ -10,9 +10,22 @@ export default class JobScheduler {
   public _parseApp: typeof Parse;
 
   constructor(parseApp: typeof Parse){
-      this._parseApp = parseApp;
-      // Init jobs on server launch
-      this.recreateScheduleForAllJobs();
+    this._parseApp = parseApp;
+
+    // Init jobs on server launch
+    this.recreateScheduleForAllJobs();
+
+    // CLOUD: Recreates schedule when a job schedule has changed
+    this._parseApp.Cloud.afterSave('_JobSchedule', async (request) => {
+        this.recreateSchedule(request.object.id)
+    });
+  
+    // CLOUD: Destroy schedule for removed job
+    this._parseApp.Cloud.afterDelete('_JobSchedule', async (request) => {
+        this.destroySchedule(request.object.id)
+    });
+
+    console.log("parse-server-job-scheduler: JobScheduler initialized.")
   }
 
   public recreateScheduleForAllJobs() {
@@ -36,7 +49,7 @@ export default class JobScheduler {
           }
         });
       });
-      console.log(`parse-server-jobs-scheduler: Recreated ${recreatedJobs} job${(recreatedJobs == 1) ? "" : "s"} successfully.`)
+      console.log(`parse-server-job-scheduler: Recreated ${recreatedJobs} job${(recreatedJobs == 1) ? "" : "s"} successfully.`)
   }
 
   public destroySchedules() {
