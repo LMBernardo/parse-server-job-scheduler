@@ -1,5 +1,5 @@
 import { CronJob } from 'cron';
-import moment from 'moment';
+const moment = require('moment');
 import axios from 'axios';
 
 const PARSE_TIMEZONE = 'UTC';
@@ -93,7 +93,7 @@ export default class JobsScheduler {
     axios.post(Parse.serverURL + '/jobs/' + jobName, params, {
       headers: {
         'X-Parse-Application-Id': Parse.applicationId,
-        'X-Parse-Master-Key': Parse.masterKey,
+        'X-Parse-Master-Key': Parse.masterKey ?? "",
       },
     }).then(() => {
       console.log(`Job ${jobName} launched.`);
