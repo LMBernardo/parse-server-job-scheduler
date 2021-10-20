@@ -5,36 +5,42 @@ import axios from 'axios';
 const PARSE_TIMEZONE = 'UTC';
 let cronJobs: { [id: string]: CronJob } = {};
 
-export default class JobScheduler {
+// https://medium.com/javascript-everyday/singleton-made-easy-with-typescript-6ad55a7ba7ff
+class JobScheduler {
 
-  public _parseApp: typeof Parse;
+  private _parseApp: typeof Parse;
+  private static instance: JobScheduler;
 
-  constructor(parseApp: typeof Parse){
-    this._parseApp = parseApp;
+  private constructor(parseApp: typeof Parse){
+      this._parseApp = parseApp;
+  };
 
-    // Init jobs on server launch
-    this.recreateScheduleForAllJobs();
+  static getInstance(parseApp: typeof Parse): JobScheduler {
+    if (!JobScheduler.instance) {
+        JobScheduler.instance = new JobScheduler(parseApp);
 
-    // CLOUD: Recreates schedule when a job schedule has changed
-    this._parseApp.Cloud.afterSave('_JobSchedule', async (request) => {
-        this.recreateSchedule(request.object.id)
-    });
-  
-    // CLOUD: Destroy schedule for removed job
-    this._parseApp.Cloud.afterDelete('_JobSchedule', async (request) => {
-        this.destroySchedule(request.object.id)
-    });
-
-    console.log("parse-server-job-scheduler: JobScheduler initialized.")
-  }
+        // Init jobs on server launch
+        JobScheduler.instance.recreateScheduleForAllJobs();
+    
+        // CLOUD: Recreates schedule when a job schedule has changed
+        JobScheduler.instance._parseApp.Cloud.afterSave('_JobSchedule', async (request) => {
+            JobScheduler.instance.recreateSchedule(request.object.id)
+        });
+      
+        // CLOUD: Destroy schedule for removed job
+        JobScheduler.instance._parseApp.Cloud.afterDelete('_JobSchedule', async (request) => {
+            JobScheduler.instance.destroySchedule(request.object.id)
+        });
+    
+        console.log("parse-server-job-scheduler: JobScheduler initialized.")
+    }
+    return JobScheduler.instance;
+}
 
   public recreateScheduleForAllJobs() {
-    if (!this._parseApp.applicationId) {
-      throw new Error('Parse is not initialized');
-    }
-
+    if (!(JobScheduler.instance._parseApp)) throw new Error('Parse is not initialized!');
     let recreatedJobs = 0;
-    const query = new this._parseApp.Query('_JobSchedule');
+    const query = new JobScheduler.instance._parseApp.Query('_JobSchedule');
     query.find({ useMasterKey: true })
       .then((jobSchedules: Parse.Object[]) => {
         this.destroySchedules();
@@ -61,9 +67,7 @@ export default class JobScheduler {
   }
 
   public recreateSchedule(jobId: string) {
-    if (!this._parseApp.applicationId) {
-      throw new Error('Parse is not initialized');
-    }
+    if (!(JobScheduler.instance._parseApp)) throw new Error('Parse is not initialized!');
     this._parseApp.Object
       .extend('_JobSchedule')
       .createWithoutData(jobId)
@@ -85,7 +89,6 @@ export default class JobScheduler {
 
   private recreateJobSchedule(job: Parse.Object) {
     this.destroySchedule(job.id);
-
     cronJobs[job.id] = this.createCronJob(job);
   }
 
@@ -113,13 +116,11 @@ export default class JobScheduler {
   }
 
   private performJob(jobName: string, params: any) {
-    if (!this._parseApp.applicationId) {
-      throw new Error('Parse is not initialized');
-    }
-    axios.post(this._parseApp.serverURL + '/jobs/' + jobName, params, {
+    if (!(JobScheduler.instance._parseApp)) throw new Error('Parse is not initialized!');
+    axios.post(JobScheduler.instance._parseApp.serverURL + '/jobs/' + jobName, params, {
       headers: {
-        'X-Parse-Application-Id': this._parseApp.applicationId,
-        'X-Parse-Master-Key': this._parseApp.masterKey ?? "",
+        'X-Parse-Application-Id': JobScheduler.instance._parseApp.applicationId,
+        'X-Parse-Master-Key': JobScheduler.instance._parseApp.masterKey ?? "",
       },
     }).then(() => {
       console.log(`Job ${jobName} launched.`);
@@ -175,4 +176,8 @@ export default class JobScheduler {
 
     return daysNumbers.join(',');
   }
+}
+
+export default function Scheduler(parseApp: typeof Parse){
+    return JobScheduler.getInstance(parseApp);
 }
