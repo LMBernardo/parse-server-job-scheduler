@@ -12,6 +12,7 @@
   "author": "lmbernar@uark.edu",
   "license": "ISC",
   "devDependencies": {
+    "@types/axios": "^0.14.0",
     "@types/cron": "^1.7.3",
     "@types/express-serve-static-core": "^4.17.21",
     "@types/node": "^16.11.1",

@@ -122,7 +122,7 @@ class JobScheduler {
       },
     }).then(() => {
       console.log(`Job ${jobName} launched.`);
-    }).catch((error) => {
+    }).catch((error: any) => {
       console.log(error);
     });
   }
