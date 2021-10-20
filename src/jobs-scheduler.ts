@@ -1,6 +1,5 @@
 import { CronJob } from 'cron';
 import Moment from 'moment';
-import Parse from "parse/node";
 import axios from 'axios';
 
 const PARSE_TIMEZONE = 'UTC';
