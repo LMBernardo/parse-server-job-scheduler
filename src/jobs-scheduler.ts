@@ -6,12 +6,19 @@ const PARSE_TIMEZONE = 'UTC';
 let cronJobs: { [id: string]: CronJob } = {};
 
 export default class JobsScheduler {
+
+  public _parseApp: typeof Parse;
+  
+  constructor(parseApp: typeof Parse){
+      this._parseApp = parseApp;
+  }
+
   public recreateScheduleForAllJobs() {
-    if (!Parse.applicationId) {
+    if (!this._parseApp.applicationId) {
       throw new Error('Parse is not initialized');
     }
 
-    const query = new Parse.Query('_JobSchedule');
+    const query = new this._parseApp.Query('_JobSchedule');
 
     query.find({ useMasterKey: true })
     // TODO: Fix any
@@ -43,7 +50,7 @@ export default class JobsScheduler {
   }
 
   public recreateSchedule(jobId: string) {
-    Parse.Object
+    this._parseApp.Object
       .extend('_JobSchedule')
       .createWithoutData(jobId)
       .fetch({ useMasterKey: true })
@@ -92,10 +99,10 @@ export default class JobsScheduler {
   }
 
   private performJob(jobName: string, params: any) {
-    axios.post(Parse.serverURL + '/jobs/' + jobName, params, {
+    axios.post(this._parseApp.serverURL + '/jobs/' + jobName, params, {
       headers: {
-        'X-Parse-Application-Id': Parse.applicationId,
-        'X-Parse-Master-Key': Parse.masterKey ?? "",
+        'X-Parse-Application-Id': this._parseApp.applicationId,
+        'X-Parse-Master-Key': this._parseApp.masterKey ?? "",
       },
     }).then(() => {
       console.log(`Job ${jobName} launched.`);
