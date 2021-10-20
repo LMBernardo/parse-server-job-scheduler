@@ -15,7 +15,7 @@ $ npm install parse-server-jobs-scheduler --save
 ### Add those lines your Parse Cloud code main file
 
 ```js
-const Scheduler = require('parse-server-jobs-scheduler').default;
+const Scheduler = require('parse-server-job-scheduler').default;
 const scheduler = new Scheduler(Parse);
 
 // Recreates schedule when a job schedule has changed
