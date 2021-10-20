@@ -1,6 +1,7 @@
 {
   "name": "parse-server-job-scheduler",
   "version": "1.2.0",
+  "type": "module",
   "description": "Job scheduler for Parse Server",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
