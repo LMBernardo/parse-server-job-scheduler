@@ -8,9 +8,11 @@ let cronJobs: { [id: string]: CronJob } = {};
 export default class JobsScheduler {
 
   public _parseApp: typeof Parse;
-  
+
   constructor(parseApp: typeof Parse){
       this._parseApp = parseApp;
+      // Init jobs on server launch
+      this.recreateScheduleForAllJobs();
   }
 
   public recreateScheduleForAllJobs() {
@@ -50,6 +52,9 @@ export default class JobsScheduler {
   }
 
   public recreateSchedule(jobId: string) {
+    if (!this._parseApp.applicationId) {
+      throw new Error('Parse is not initialized');
+    }
     this._parseApp.Object
       .extend('_JobSchedule')
       .createWithoutData(jobId)
@@ -99,6 +104,9 @@ export default class JobsScheduler {
   }
 
   private performJob(jobName: string, params: any) {
+    if (!this._parseApp.applicationId) {
+      throw new Error('Parse is not initialized');
+    }
     axios.post(this._parseApp.serverURL + '/jobs/' + jobName, params, {
       headers: {
         'X-Parse-Application-Id': this._parseApp.applicationId,

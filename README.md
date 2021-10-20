@@ -16,10 +16,7 @@ $ npm install parse-server-jobs-scheduler --save
 
 ```js
 const Scheduler = require('parse-server-jobs-scheduler').default;
-const scheduler = new Scheduler();
-
-// Recreates all crons when the server is launched
-scheduler.recreateScheduleForAllJobs();
+const scheduler = new Scheduler(Parse);
 
 // Recreates schedule when a job schedule has changed
 Parse.Cloud.afterSave('_JobSchedule', async (request) => {
