@@ -1,6 +1,8 @@
 # Parse Server Job Scheduler
 
 Forked from [LcpMarvel/parse-server-jobs-scheduler](https://github.com/LcpMarvel/parse-server-jobs-scheduler)
+
+Available on [GitHub](https://github.com/LMBernardo/parse-server-job-scheduler) and [npm](https://www.npmjs.com/package/parse-server-job-scheduler)
 ## Notes
 * It's better to use [cron jobs](https://docs.parseplatform.org/cloudcode/guide/#scheduling-a-job) instead of using this library.
 * You have to handle any concurrency issues. This plugin is run by Parse Server's workers if cluster is true.
@@ -28,8 +30,8 @@ try {
 # Disclaimer
 Please read the [**LICENSE**](./LICENSE).
 
-This library is **UNTESTED** and is **NOT** guaranteed to work well, or at all. I am not responsible for anything resulting from the use, or misuse, of this library.
+This library is **NOT** fully tested and is **NOT** guaranteed to work well, or at all. I am not responsible for anything resulting from the use, or misuse, of this library.
 
 Github [issues](https://github.com/LMBernardo/parse-server-job-scheduler/issues/new) and [pull requests](https://github.com/LMBernardo/parse-server-job-scheduler/pulls) are welcome. 
 
-Please email any questions or concerns to the author of this package.
+Please email any questions or concerns to the author of this package, or open a [discussion](https://github.com/LMBernardo/parse-server-job-scheduler/discussions).
