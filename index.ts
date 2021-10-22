@@ -9,38 +9,41 @@ let cronJobs: { [id: string]: CronJob } = {};
 class JobScheduler {
 
   private _parseApp: typeof Parse;
-  private static instance: JobScheduler;
+  private static instances: Map<string, JobScheduler>;
 
   private constructor(parseApp: typeof Parse){
       this._parseApp = parseApp;
   };
 
-  static getInstance(parseApp: typeof Parse): JobScheduler {
-    if (!JobScheduler.instance) {
-        JobScheduler.instance = new JobScheduler(parseApp);
-
+  static getInstance(parseApp: typeof Parse | undefined): JobScheduler {
+    if (parseApp == undefined) parseApp = Parse;
+    if (parseApp == undefined || !parseApp.applicationId)
+      throw new Error('Parse is not initialized!');
+    if (!JobScheduler.instances.has(parseApp.applicationId)) {
+        JobScheduler.instances.set(parseApp.applicationId, new JobScheduler(parseApp));
+        let newScheduler = JobScheduler.instances.get(parseApp.applicationId)!;
         // Init jobs on server launch
-        JobScheduler.instance.recreateScheduleForAllJobs();
+        newScheduler.recreateScheduleForAllJobs();
     
         // CLOUD: Recreates schedule when a job schedule has changed
-        JobScheduler.instance._parseApp.Cloud.afterSave('_JobSchedule', async (request) => {
-            JobScheduler.instance.recreateSchedule(request.object.id)
+        newScheduler._parseApp.Cloud.afterSave('_JobSchedule', async (request) => {
+          newScheduler.recreateSchedule(request.object.id)
         });
       
         // CLOUD: Destroy schedule for removed job
-        JobScheduler.instance._parseApp.Cloud.afterDelete('_JobSchedule', async (request) => {
-            JobScheduler.instance.destroySchedule(request.object.id)
+        newScheduler._parseApp.Cloud.afterDelete('_JobSchedule', async (request) => {
+            newScheduler.destroySchedule(request.object.id)
         });
     
         console.log("parse-server-job-scheduler: JobScheduler initialized.")
     }
-    return JobScheduler.instance;
+    return JobScheduler.instances.get(parseApp.applicationId)!;
 }
 
   public recreateScheduleForAllJobs() {
-    if (!(JobScheduler.instance._parseApp)) throw new Error('Parse is not initialized!');
+    if (!(this._parseApp.applicationId)) throw new Error('Parse is not initialized!');
     let recreatedJobs = 0;
-    const query = new JobScheduler.instance._parseApp.Query('_JobSchedule');
+    const query = new this._parseApp.Query('_JobSchedule');
     query.find({ useMasterKey: true })
       .then((jobSchedules: Parse.Object[]) => {
         this.destroySchedules();
@@ -65,7 +68,7 @@ class JobScheduler {
   }
 
   public recreateSchedule(jobId: string) {
-    if (!(JobScheduler.instance._parseApp)) throw new Error('Parse is not initialized!');
+    if (!(this._parseApp.applicationId)) throw new Error('Parse is not initialized!');
     this._parseApp.Object
       .extend('_JobSchedule')
       .createWithoutData(jobId)
@@ -114,11 +117,11 @@ class JobScheduler {
   }
 
   private performJob(jobName: string, params: any) {
-    if (!(JobScheduler.instance._parseApp)) throw new Error('Parse is not initialized!');
-    axios.post(JobScheduler.instance._parseApp.serverURL + '/jobs/' + jobName, params, {
+    if (!(this._parseApp.applicationId)) throw new Error('Parse is not initialized!');
+    axios.post(this._parseApp.serverURL + '/jobs/' + jobName, params, {
       headers: {
-        'X-Parse-Application-Id': JobScheduler.instance._parseApp.applicationId,
-        'X-Parse-Master-Key': JobScheduler.instance._parseApp.masterKey ?? "",
+        'X-Parse-Application-Id': this._parseApp.applicationId,
+        'X-Parse-Master-Key': this._parseApp.masterKey ?? "",
       },
     }).then(() => {
       console.log(`Job ${jobName} launched.`);
@@ -176,6 +179,6 @@ class JobScheduler {
   }
 }
 
-module.exports = function(parseApp: typeof Parse){
+module.exports = function(parseApp: typeof Parse | undefined){
     return JobScheduler.getInstance(parseApp);
 }
