@@ -7,7 +7,7 @@ Available on [GitHub](https://github.com/LMBernardo/parse-server-job-scheduler) 
 * It's better to use [cron jobs](https://docs.parseplatform.org/cloudcode/guide/#scheduling-a-job) instead of using this library.
 * You have to handle any concurrency issues. This plugin is run by Parse Server's workers if cluster is true.
 * This library REQUIRES Parse cloud code to be set up and functional.
-* Parse must be initialized before passing `Parse` to the scheduler.
+* Parse must be initialized before creating the scheduler.
 ## How to use it?
 
 ### Install the library
@@ -20,7 +20,7 @@ $ npm install parse-server-job-scheduler --save
 ```js
 try {
     var scheduler = require('parse-server-job-scheduler');
-    scheduler(Parse);
+    scheduler();
 } catch (err) {
     console.error("Error: " + err);
     console.error("Failed to set up job scheduling!");
