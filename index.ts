@@ -42,10 +42,10 @@ class JobScheduler {
 
   public recreateScheduleForAllJobs() {
     if (!(this._parseApp.applicationId)) throw new Error('Parse is not initialized!');
-    let recreatedJobs = 0;
     const query = new this._parseApp.Query('_JobSchedule');
     query.find({ useMasterKey: true })
       .then((jobSchedules: Parse.Object[]) => {
+        let recreatedJobs = 0;
         this.destroySchedules();
         jobSchedules.forEach((jobSchedule: Parse.Object) => {
           try {
@@ -55,8 +55,8 @@ class JobScheduler {
             console.log(error);
           }
         });
+        console.log(`parse-server-job-scheduler: Recreated ${recreatedJobs} job${(recreatedJobs == 1) ? "" : "s"} successfully.`)
       });
-      console.log(`parse-server-job-scheduler: Recreated ${recreatedJobs} job${(recreatedJobs == 1) ? "" : "s"} successfully.`)
   }
 
   public destroySchedules() {
