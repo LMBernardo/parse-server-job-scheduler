@@ -1,6 +1,6 @@
 {
   "name": "parse-server-job-scheduler",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "type": "commonjs",
   "description": "Job scheduler for Parse Server",
   "main": "./dist/index.js",
@@ -22,7 +22,7 @@
     "typescript": "^3.0"
   },
   "peerDependencies": {
-    "parse-server": "^2.1.0 || 3.x || 4.x"
+    "parse-server": "^2.1.0 || ^3.0.0 || ^4.0.0"
   },
   "dependencies": {
     "axios": "^0.21.1",
