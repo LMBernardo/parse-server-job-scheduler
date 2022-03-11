@@ -9,7 +9,7 @@ let cronJobs: { [id: string]: CronJob } = {};
 class JobScheduler {
 
   private _parseApp: typeof Parse;
-  private static instances: Map<string, JobScheduler> = new Map<string, JobScheduler>;
+  private static instances: Map<string, JobScheduler> = new Map<string, JobScheduler>();
 
   private constructor(parseApp: typeof Parse){
       this._parseApp = parseApp;
