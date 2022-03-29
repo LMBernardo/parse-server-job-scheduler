@@ -13,7 +13,6 @@
   "author": "lmbernar@uark.edu",
   "license": "ISC",
   "devDependencies": {
-    "@types/axios": "^0.14.0",
     "@types/cron": "^1.7.0",
     "@types/express-serve-static-core": "^4.0",
     "@types/moment": "^2.0",
@@ -22,7 +21,7 @@
     "typescript": "^3.0"
   },
   "peerDependencies": {
-    "parse-server": "^2.1.0 || ^3.0.0 || ^4.0.0 || 4.10.5 || 4.10.6 || 4.10.7 || 4.10.8 || 4.10.9 || >=5.2.0-beta.1 || >=5.2.0"
+    "parse-server": ">=2 || >= 5.0.0-alpha.1 || >=5.1.1 || >=5.2.0-alpha"
   },
   "dependencies": {
     "axios": "^0.21.1",
